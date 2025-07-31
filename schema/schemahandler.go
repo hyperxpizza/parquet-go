@@ -309,6 +309,20 @@ func NewSchemaHandlerFromStruct(obj interface{}) (sh *SchemaHandler, err error) 
 				}
 				stack = append(stack, newItem)
 			}
+		} else if item.GoType.Kind() == reflect.Interface {
+			schema := parquet.NewSchemaElement()
+			schema.Name = item.Info.InName
+			schema.RepetitionType = &item.Info.RepetitionType
+			t := parquet.Type_BYTE_ARRAY
+			ct := parquet.ConvertedType_UTF8
+			schema.Type = &t
+			schema.ConvertedType = &ct
+			schemaElements = append(schemaElements, schema)
+
+			newInfo = common.NewTag()
+			common.DeepCopy(item.Info, newInfo)
+			infos = append(infos, newInfo)
+
 		} else if item.GoType.Kind() == reflect.Slice &&
 			item.Info.RepetitionType != parquet.FieldRepetitionType_REPEATED {
 			schema := parquet.NewSchemaElement()

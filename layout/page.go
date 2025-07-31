@@ -13,6 +13,7 @@ import (
 	"github.com/hyperxpizza/parquet-go/encoding"
 	"github.com/hyperxpizza/parquet-go/parquet"
 	"github.com/hyperxpizza/parquet-go/schema"
+	"github.com/hyperxpizza/pretty"
 )
 
 // Page is used to store the page data
@@ -76,6 +77,7 @@ func TableToDataPages(table *Table, pageSize int32, compressType parquet.Compres
 	pT, cT, logT, omitStats := table.Schema.Type, table.Schema.ConvertedType, table.Schema.LogicalType, table.Info.OmitStats
 	name := table.Schema.Name
 	fmt.Printf("dealing with name: %s \n", name)
+	pretty.Print(table.Values)
 	for i < totalLn {
 		j := i
 		var size int32 = 0

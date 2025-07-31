@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/big"
 	"reflect"
@@ -218,6 +219,8 @@ func InterfaceToParquetType(src interface{}, pT *parquet.Type) interface{} {
 	fmt.Printf("valueof: %s \n", reflect.ValueOf(src).String())
 	fmt.Printf("parquet type: %s \n", pT.String())
 
+	//if *pt == parquet.Type_BYTE_ARRAY && reflect.TypeOf(src).Kind() != reflect.Array
+
 	switch *pT {
 	case parquet.Type_BOOLEAN:
 		if _, ok := src.(bool); ok {
@@ -262,7 +265,14 @@ func InterfaceToParquetType(src interface{}, pT *parquet.Type) interface{} {
 		if _, ok := src.(string); ok {
 			return src
 		} else {
-			return reflect.ValueOf(src).String()
+
+			byteData, err := json.Marshal(src)
+			if err != nil {
+				return reflect.ValueOf(src).String()
+			}
+
+			return string(byteData)
+
 		}
 
 	default:
